@@ -54,17 +54,5 @@ def todo(task_id=None):
         })
 
 
-def todo_id(task_id):
-    username = request.form['username']
-    password = request.form['password']
-
-    if not db_manager.login_user(username, password):
-        return jsonify({
-            'success': False
-        })
-
-
-
-
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=80)
