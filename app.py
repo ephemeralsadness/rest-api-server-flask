@@ -7,6 +7,13 @@ app = Flask(__name__)
 db_manager = DBManager()
 
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        'Hello': 'world!'
+    })
+
+
 @app.route('/user/', methods=['POST'])
 def register_user():
     if request.method == 'POST':
