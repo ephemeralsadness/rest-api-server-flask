@@ -20,8 +20,8 @@ class DBManager:
 
     @staticmethod
     def __encrypt(password):
-        key = pbkdf2_hmac('sha256', password.encode('utf-8'), SALT, 100000)
-        return SALT + key
+        key = pbkdf2_hmac('sha256', str(SALT + password).encode('utf-8'), SALT, 100000)
+        return key
 
     def login_user(self, username, password):
         cursor = self.__connection.cursor()
