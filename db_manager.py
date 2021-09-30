@@ -1,3 +1,5 @@
+from config import SALT
+from hashlib import pbkdf2_hmac
 import sqlite3
 from sql_queries import QUERIES
 
@@ -16,6 +18,11 @@ class DBManager:
     def __del__(self):
         self.__connection.close()
 
+    @staticmethod
+    def __encrypt(password):
+        key = pbkdf2_hmac('sha256', password.encode('utf-8'), SALT, 100000)
+        return SALT + key
+
     def login_user(self, username, password):
         cursor = self.__connection.cursor()
         cursor.execute(QUERIES.GET_USER, (username,))
@@ -27,7 +34,7 @@ class DBManager:
             return
 
         real_password = rows[0][0]
-        return password == real_password
+        return self.__encrypt(password) == real_password
 
     def register_user(self, username, password):
         cursor = self.__connection.cursor()
@@ -37,7 +44,7 @@ class DBManager:
         if len(username_rows) > 0:
             return False
 
-        cursor.execute(QUERIES.CREATE_USER, (username, password))
+        cursor.execute(QUERIES.CREATE_USER, (username, self.__encrypt(password)))
         self.__connection.commit()
         return True
 
