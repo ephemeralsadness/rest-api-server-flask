@@ -6,7 +6,6 @@ with database manager
 """
 import json
 
-from config import FILE_FOLDER
 from db_manager import DBManager
 from flask import Flask, jsonify, request, send_file, Response
 
