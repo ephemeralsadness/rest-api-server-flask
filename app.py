@@ -1,7 +1,8 @@
 import json
 
+from config import FILE_FOLDER
 from db_manager import DBManager
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 
 app = Flask(__name__)
 db_manager = DBManager()
@@ -59,6 +60,46 @@ def todo(task_id=None):
         return jsonify({
             'success': True
         })
+
+
+@app.route('/files/', methods=['GET', 'POST'])
+@app.route('/files/<string:filename>/', methods=['GET', 'DELETE'])
+def file(filename=None):
+    username = request.form['username']
+    password = request.form['password']
+
+    if not db_manager.login_user(username, password):
+        return jsonify({
+            'success': False
+        })
+
+    file_writer = db_manager.get_file_writer()
+
+    if request.method == 'GET':
+        if filename:
+            filepath = file_writer.get(username, filename)
+            if filepath is not None:
+                return send_file(filepath)
+        else:
+            return jsonify({
+                'success': True,
+                'files': file_writer.files(username)
+            })
+    elif request.method == 'POST':
+        if 'file' in request.files:
+            file_writer.save(username, request.files['file'])
+        return jsonify({
+            'success': True
+        })
+    elif request.method == 'DELETE':
+        file_writer.remove(username, filename)
+        return jsonify({
+            'success': True
+        })
+
+    return jsonify({
+        'success': False
+    })
 
 
 if __name__ == '__main__':

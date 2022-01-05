@@ -1,7 +1,40 @@
-from config import SALT
+from config import SALT, FILE_FOLDER
 from hashlib import pbkdf2_hmac
+import os
+from os.path import join as pj
 import sqlite3
 from sql_queries import QUERIES
+from werkzeug.utils import secure_filename
+
+
+class FileWriter:
+    def __init__(self, file_folder):
+        # Absolute path to folder
+        self.FILE_FOLDER = file_folder
+
+    def save(self, username, file):
+        filepath = pj(self.FILE_FOLDER, username, secure_filename(file.filename))
+        file.save(filepath)
+
+    def get(self, username, filename):
+        filepath = pj(self.FILE_FOLDER, username, filename)
+        if not os.path.exists(filepath):
+            return None
+        return filepath
+
+    def files(self, username):
+        folder_path = pj(self.FILE_FOLDER, username)
+        if not os.path.isdir(folder_path):
+            os.remove(folder_path)
+        if not os.path.exists(folder_path):
+            os.mkdir(folder_path)
+
+        return os.listdir(folder_path)
+
+    def remove(self, username, filename):
+        filepath = pj(self.FILE_FOLDER, username, filename)
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
 
 class DBManager:
@@ -9,6 +42,7 @@ class DBManager:
     def __init__(self):
         self.users = {}
         self.__connection = sqlite3.connect('users.db', check_same_thread=False)
+        self.file_writer = FileWriter(FILE_FOLDER)
 
         cursor = self.__connection.cursor()
         cursor.execute(QUERIES.CREATE_USERS_TABLE)
@@ -20,7 +54,7 @@ class DBManager:
 
     @staticmethod
     def __encrypt(password):
-        key = pbkdf2_hmac('sha256', str(SALT + password).encode('utf-8'), SALT, 100000)
+        key = pbkdf2_hmac('sha256', password.encode('utf-8'), SALT, 100000)
         return key
 
     def login_user(self, username, password):
@@ -77,3 +111,6 @@ class DBManager:
         cursor = self.__connection.cursor()
         cursor.execute(QUERIES.REFRESH_TASK, (task_done, task_id, username))
         self.__connection.commit()
+
+    def get_file_writer(self):
+        return self.file_writer
