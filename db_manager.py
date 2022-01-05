@@ -13,7 +13,9 @@ class FileWriter:
         self.FILE_FOLDER = file_folder
 
     def save(self, username, file):
-        filepath = pj(self.FILE_FOLDER, username, secure_filename(file.filename))
+        filepath = pj(self.FILE_FOLDER,
+                      username,
+                      secure_filename(file.filename))
         file.save(filepath)
 
     def get(self, username, filename):
@@ -47,7 +49,8 @@ class DBManager:
 
     def __init__(self):
         self.users = {}
-        self.__connection = sqlite3.connect('users.db', check_same_thread=False)
+        self.__connection = sqlite3.connect('users.db',
+                                            check_same_thread=False)
         self.file_writer = FileWriter(FILE_FOLDER)
 
         cursor = self.__connection.cursor()
@@ -84,7 +87,8 @@ class DBManager:
         if len(username_rows) > 0:
             return False
 
-        cursor.execute(QUERIES.CREATE_USER, (username, self.__encrypt(password)))
+        cursor.execute(QUERIES.CREATE_USER,
+                       (username, self.__encrypt(password)))
         self.__connection.commit()
         return True
 

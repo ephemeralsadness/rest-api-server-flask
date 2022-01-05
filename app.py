@@ -97,7 +97,9 @@ def file(filename=None):
             'success': True
         })
 
-    return Response('{"success": false}', status=400, mimetype='application/json')
+    return Response('{"success": false}',
+                    status=400,
+                    mimetype='application/json')
 
 
 if __name__ == '__main__':
