@@ -24,7 +24,7 @@ class FileWriter:
 
     def files(self, username):
         folder_path = pj(self.FILE_FOLDER, username)
-        if not os.path.isdir(folder_path):
+        if os.path.exists(folder_path) and not os.path.isdir(folder_path):
             os.remove(folder_path)
         if not os.path.exists(folder_path):
             os.mkdir(folder_path)

@@ -2,7 +2,7 @@ import json
 
 from config import FILE_FOLDER
 from db_manager import DBManager
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, Response
 
 app = Flask(__name__)
 db_manager = DBManager()
@@ -97,9 +97,7 @@ def file(filename=None):
             'success': True
         })
 
-    return jsonify({
-        'success': False
-    })
+    return Response('{"success": false}', status=400, mimetype='application/json')
 
 
 if __name__ == '__main__':
