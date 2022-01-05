@@ -29,7 +29,13 @@ class FileWriter:
         if not os.path.exists(folder_path):
             os.mkdir(folder_path)
 
-        return os.listdir(folder_path)
+        def mapper(relative_file):
+            return {
+                'file': relative_file,
+                'size': os.path.getsize(pj(folder_path, relative_file))
+            }
+
+        return list(map(mapper, os.listdir(folder_path)))
 
     def remove(self, username, filename):
         filepath = pj(self.FILE_FOLDER, username, filename)
