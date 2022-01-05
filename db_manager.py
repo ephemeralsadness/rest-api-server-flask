@@ -4,13 +4,14 @@ Database module.
 It contains DBManager and FileWriter classes
 """
 
-from config import SALT, FILE_FOLDER
 from hashlib import pbkdf2_hmac
 import os
 from os.path import join as pj
 import sqlite3
-from sql_queries import QUERIES
 from werkzeug.utils import secure_filename
+
+from sql_queries import QUERIES
+from config import SALT, FILE_FOLDER
 
 
 class FileWriter:
@@ -80,7 +81,7 @@ class DBManager:
 
         has_user = len(rows) != 0
         if not has_user:
-            return
+            return None
 
         real_password = rows[0][0]
         return self.__encrypt(password) == real_password

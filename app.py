@@ -5,9 +5,9 @@ It contains handle descriptions and works
 with database manager
 """
 import json
+from flask import Flask, jsonify, request, send_file, Response
 
 from db_manager import DBManager
-from flask import Flask, jsonify, request, send_file, Response
 
 app = Flask(__name__)
 db_manager = DBManager()
@@ -22,6 +22,7 @@ def register_user():
         return jsonify({
             'success': successful_registration
         })
+    return None
 
 
 @app.route('/todo/', methods=['GET', 'POST'])
@@ -44,20 +45,15 @@ def todo(task_id=None):
     elif request.method == 'POST':
         task_name = request.form['task_name']
         db_manager.add_task(username, task_name)
-        return jsonify({
-            'success': True
-        })
     elif request.method == 'PUT':
         task_done = json.loads(request.form['task_done'])
         db_manager.refresh_task(username, task_id, task_done)
-        return jsonify({
-            'success': True
-        })
     elif request.method == 'DELETE':
         db_manager.delete_task(username, task_id)
-        return jsonify({
-            'success': True
-        })
+
+    return jsonify({
+        'success': True
+    })
 
 
 @app.route('/files/', methods=['GET', 'POST'])
