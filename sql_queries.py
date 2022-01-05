@@ -1,3 +1,9 @@
+"""
+SQL module.
+
+It contains SQL queries for sqlite
+"""
+
 
 class QUERIES:
     CREATE_USERS_TABLE = '''

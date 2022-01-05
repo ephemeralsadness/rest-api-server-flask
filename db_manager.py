@@ -1,3 +1,9 @@
+"""
+Database module.
+
+It contains DBManager and FileWriter classes
+"""
+
 from config import SALT, FILE_FOLDER
 from hashlib import pbkdf2_hmac
 import os

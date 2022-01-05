@@ -1,3 +1,9 @@
+"""
+Application module.
+
+It contains handle descriptions and works
+with database manager
+"""
 import json
 
 from config import FILE_FOLDER
@@ -6,13 +12,6 @@ from flask import Flask, jsonify, request, send_file, Response
 
 app = Flask(__name__)
 db_manager = DBManager()
-
-
-@app.route('/', methods=['GET'])
-def index():
-    return jsonify({
-        'Hello': 'world!'
-    })
 
 
 @app.route('/user/', methods=['POST'])
