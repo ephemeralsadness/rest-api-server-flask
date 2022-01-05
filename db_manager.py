@@ -20,9 +20,7 @@ class FileWriter:
         self.FILE_FOLDER = file_folder
 
     def save(self, username, file):
-        filepath = pj(self.FILE_FOLDER,
-                      username,
-                      secure_filename(file.filename))
+        filepath = pj(self.FILE_FOLDER, username, secure_filename(file.filename))
         file.save(filepath)
 
     def get(self, username, filename):
@@ -40,8 +38,8 @@ class FileWriter:
 
         def mapper(relative_file):
             return {
-                'file': relative_file,
-                'size': os.path.getsize(pj(folder_path, relative_file))
+                "file": relative_file,
+                "size": os.path.getsize(pj(folder_path, relative_file)),
             }
 
         return list(map(mapper, os.listdir(folder_path)))
@@ -53,11 +51,9 @@ class FileWriter:
 
 
 class DBManager:
-
     def __init__(self):
         self.users = {}
-        self.__connection = sqlite3.connect('users.db',
-                                            check_same_thread=False)
+        self.__connection = sqlite3.connect("users.db", check_same_thread=False)
         self.file_writer = FileWriter(FILE_FOLDER)
 
         cursor = self.__connection.cursor()
@@ -70,7 +66,7 @@ class DBManager:
 
     @staticmethod
     def __encrypt(password):
-        key = pbkdf2_hmac('sha256', password.encode('utf-8'), SALT, 100000)
+        key = pbkdf2_hmac("sha256", password.encode("utf-8"), SALT, 100000)
         return key
 
     def login_user(self, username, password):
@@ -94,8 +90,7 @@ class DBManager:
         if len(username_rows) > 0:
             return False
 
-        cursor.execute(QUERIES.CREATE_USER,
-                       (username, self.__encrypt(password)))
+        cursor.execute(QUERIES.CREATE_USER, (username, self.__encrypt(password)))
         self.__connection.commit()
         return True
 
@@ -106,11 +101,7 @@ class DBManager:
         self.__connection.commit()
 
         def task_row_to_object(row):
-            return {
-                'task_id': row[0],
-                'name': row[1],
-                'done': row[2]
-            }
+            return {"task_id": row[0], "name": row[1], "done": row[2]}
 
         return list(map(task_row_to_object, rows))
 
