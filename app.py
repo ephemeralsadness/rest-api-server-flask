@@ -5,12 +5,21 @@ It contains handle descriptions and works
 with database manager
 """
 import json
+import os
+
 from flask import Flask, jsonify, request, send_file, Response
 
 from db_manager import DBManager
 
 app = Flask(__name__)
 db_manager = DBManager()
+
+
+@app.route("/health/", methods=["GET"])
+def health():
+    return jsonify({
+        "env": os.environ["FLASK_ENV"]
+    })
 
 
 @app.route("/user/", methods=["POST"])
