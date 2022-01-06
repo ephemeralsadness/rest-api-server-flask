@@ -21,6 +21,8 @@ class FileWriter:
 
     def save(self, username, file):
         filepath = pj(self.FILE_FOLDER, username, secure_filename(file.filename))
+        if not os.path.exists(pj(self.FILE_FOLDER, username)):
+            os.mkdir(pj(self.FILE_FOLDER, username))
         file.save(filepath)
 
     def get(self, username, filename):

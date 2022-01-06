@@ -11,6 +11,11 @@ from flask import Flask, jsonify, request, send_file, Response
 
 from db_manager import DBManager
 
+from dotenv import load_dotenv
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')  # Path to .env file
+load_dotenv(dotenv_path)
+print(dotenv_path)
+
 app = Flask(__name__)
 db_manager = DBManager()
 
@@ -18,7 +23,7 @@ db_manager = DBManager()
 @app.route("/health/", methods=["GET"])
 def health():
     return jsonify({
-        "env": os.environ["FLASK_ENV"]
+        "env": os.environ['SERVER_ENV']
     })
 
 
@@ -29,7 +34,6 @@ def register_user():
         password = request.form["password"]
         successful_registration = db_manager.register_user(username, password)
         return jsonify({"success": successful_registration})
-    return None
 
 
 @app.route("/todo/", methods=["GET", "POST"])
@@ -37,7 +41,6 @@ def register_user():
 def todo(task_id=None):
     username = request.form["username"]
     password = request.form["password"]
-
     if not db_manager.login_user(username, password):
         return jsonify({"success": False})
 
